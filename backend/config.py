@@ -56,25 +56,8 @@ class Settings(BaseSettings):
     # API
     api_host: str = "0.0.0.0"
     api_port: int = 8000
-    api_cors_origins: List[str] = ["http://localhost:3000"]
-
-    @field_validator("api_cors_origins", mode="before")
-    @classmethod
-    def parse_cors_origins(cls, v):
-        """
-        Allow API_CORS_ORIGINS to be provided as:
-        - a JSON array: '["https://a.com","https://b.com"]'
-        - or a comma-separated string: 'https://a.com,https://b.com'
-        """
-        if v is None or (isinstance(v, str) and not v.strip()):
-            return ["http://localhost:3000"]
-        if isinstance(v, str):
-            # If it's JSON, let pydantic handle it; if not, split on commas.
-            text = v.strip()
-            if text.startswith("[") and text.endswith("]"):
-                return text  # pydantic will parse JSON list
-            return [item.strip() for item in text.split(",") if item.strip()]
-        return v
+    # Comma-separated list of origins, e.g. "http://localhost:3000,https://your-app.vercel.app"
+    api_cors_origins: str = "http://localhost:3000"
 
     class Config:
         env_file = ".env"

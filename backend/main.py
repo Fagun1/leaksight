@@ -38,10 +38,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS: allow frontend origins (env may parse list incorrectly)
+# CORS: allow frontend origins (API_CORS_ORIGINS as comma-separated string)
 _cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
-if isinstance(settings.api_cors_origins, list) and settings.api_cors_origins:
-    _cors_origins = list(settings.api_cors_origins)
+if isinstance(settings.api_cors_origins, str) and settings.api_cors_origins.strip():
+    _cors_origins = [
+        origin.strip()
+        for origin in settings.api_cors_origins.split(",")
+        if origin.strip()
+    ]
 
 app.add_middleware(
     CORSMiddleware,
