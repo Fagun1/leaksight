@@ -22,7 +22,10 @@ export default function RootLayout({
       <body className={`${inter.className} h-full`}>
         <QueryProvider>
           <div className="flex h-full">
-            <Sidebar />
+            {/* Desktop sidebar */}
+            <div className="hidden md:block">
+              <Sidebar />
+            </div>
             <div className="flex flex-1 flex-col overflow-hidden">
               <Header />
               <main className="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-950">
