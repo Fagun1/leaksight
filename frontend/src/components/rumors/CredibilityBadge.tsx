@@ -15,11 +15,25 @@ export default function CredibilityBadge({
   grade?: string;
   score?: number;
 }) {
-  const g = (grade || (score != null && score >= 85 ? "A" : score >= 70 ? "B" : score >= 55 ? "C" : score >= 40 ? "D" : "F")).toUpperCase().slice(0, 1);
+  const normalizedScore = score ?? 0;
+  const autoGrade =
+    normalizedScore >= 85
+      ? "A"
+      : normalizedScore >= 70
+      ? "B"
+      : normalizedScore >= 55
+      ? "C"
+      : normalizedScore >= 40
+      ? "D"
+      : "F";
+
+  const g = (grade ?? autoGrade).toUpperCase().slice(0, 1);
   const style = GRADE_COLORS[g] || GRADE_COLORS.C;
   return (
     <span className={`px-2 py-0.5 rounded text-xs font-medium ${style}`}>
-      {grade ? `${grade}${score != null ? ` ${Math.round(score)}%` : ""}` : `${Math.round(score ?? 0)}%`}
+      {grade
+        ? `${grade}${score != null ? ` ${Math.round(score)}%` : ""}`
+        : `${Math.round(normalizedScore)}%`}
     </span>
   );
 }
