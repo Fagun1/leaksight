@@ -38,18 +38,22 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS: allow frontend origins (API_CORS_ORIGINS as comma-separated string)
-_cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+# CORS: always allow localhost + leaksight.vercel.app + any *.vercel.app preview
+_cors_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://leaksight.vercel.app",
+]
 if isinstance(settings.api_cors_origins, str) and settings.api_cors_origins.strip():
-    _cors_origins = [
-        origin.strip()
-        for origin in settings.api_cors_origins.split(",")
-        if origin.strip()
-    ]
+    for origin in settings.api_cors_origins.split(","):
+        o = origin.strip()
+        if o and o not in _cors_origins:
+            _cors_origins.append(o)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # preview deployments
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
