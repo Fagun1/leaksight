@@ -10,10 +10,10 @@ export default function Header() {
     <>
       <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Mobile menu button */}
+          {/* Mobile & tablet menu button */}
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-slate-500 hover:text-slate-200 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 md:hidden"
+            className="inline-flex items-center justify-center rounded-md p-2 text-slate-500 hover:text-slate-200 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 lg:hidden"
             aria-label="Open navigation"
             onClick={() => setMobileOpen(true)}
           >
