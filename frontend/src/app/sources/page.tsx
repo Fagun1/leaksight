@@ -34,20 +34,20 @@ export default function SourcesPage() {
       </div>
 
       {sources.length === 0 ? (
-        <div className="p-8 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-center text-slate-500">
+        <div className="p-8 glass-card rounded-xl text-center text-slate-500">
           No sources yet. Data will appear as posts are processed.
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div className="glass-card rounded-xl overflow-hidden">
           <table className="w-full">
-            <thead className="bg-slate-50 dark:bg-slate-800/50">
+            <thead className="bg-black/40 text-slate-500 text-[9px] font-black uppercase tracking-[0.2em]">
               <tr>
-                <th className="text-left p-4 font-semibold">Source</th>
-                <th className="text-left p-4 font-semibold">Platform</th>
-                <th className="text-left p-4 font-semibold">Credibility</th>
+                <th className="text-left py-3 px-6">Source</th>
+                <th className="text-left py-3 px-6">Platform</th>
+                <th className="text-left py-3 px-6">Credibility</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-white/5">
               {sources.map((source: any) => (
                 <tr
                   key={`${source.platform}-${source.username}`}

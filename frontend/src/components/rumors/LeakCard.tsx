@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import StatusBadge from "./StatusBadge";
-import CredibilityBadge from "./CredibilityBadge";
 import MiniTimeline from "../timeline/MiniTimeline";
 import type { Rumor } from "@/types/rumor";
 
@@ -37,45 +36,68 @@ interface LeakCardProps {
 export default function LeakCard({ rumor, expanded = false }: LeakCardProps) {
   const id = rumor.id ?? rumor._id;
   const emoji = CATEGORY_EMOJI[rumor.category] || "📰";
-  const score = rumor.confidence ?? rumor.credibility_score != null ? rumor.credibility_score / 100 : 0;
+  const score = rumor.confidence ?? (rumor.credibility_score != null ? rumor.credibility_score / 100 : 0);
+  const scorePct = Math.round((score || 0) * 100);
+  const level = scorePct >= 80 ? "HIGH_CRIT" : scorePct >= 50 ? "MEDIUM_INTEL" : "LOW_RISK";
+  const levelColors =
+    scorePct >= 80
+      ? "bg-red-500/10 text-red-500 border-red-500/20"
+      : scorePct >= 50
+        ? "bg-orange-500/10 text-orange-500 border-orange-500/20"
+        : "bg-accent-lime/10 text-accent-lime border-accent-lime/20";
   const timeAgo = getTimeAgo(rumor.first_seen || rumor.last_seen || "");
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-lg shadow border border-slate-200 dark:border-slate-800 p-5 hover:shadow-md transition-shadow">
+    <div className="p-5 hover:bg-white/[0.03] transition-colors">
       <div className="flex items-start justify-between gap-3 mb-2">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h3 className="text-base font-bold text-white">
           <span className="mr-2">{emoji}</span>
-          <Link href={`/rumors/${id}`} className="hover:text-cyan-600 dark:hover:text-cyan-400">
+          <Link href={`/rumors/${id}`} className="hover:text-accent-lime hover:glow-text transition-colors">
             {rumor.title}
           </Link>
         </h3>
-        <CredibilityBadge grade={rumor.grade} score={score * 100} />
+        <span className={`px-2 py-0.5 text-[9px] font-black uppercase rounded border shrink-0 ${levelColors}`}>
+          {scorePct}%
+        </span>
       </div>
-      <div className="flex flex-wrap gap-3 text-sm mb-2">
-        <span className="text-slate-500">Score: <strong className="text-cyan-600">{Math.round((score || 0) * 100)}%</strong></span>
-        <span className="text-slate-500">Sources: <strong>{rumor.source_count ?? rumor.post_ids?.length ?? 0}</strong></span>
+      <div className="flex flex-wrap gap-3 text-[10px] font-black uppercase tracking-widest mb-2">
+        <span className="text-slate-500">
+          SCORE: <span className="text-accent-lime">{scorePct}%</span>
+        </span>
+        <span className="text-slate-500">
+          SOURCES: <span className="text-white">{rumor.source_count ?? rumor.post_ids?.length ?? 0}</span>
+        </span>
         <StatusBadge status={rumor.status} />
         {timeAgo && <span className="text-slate-400">{timeAgo}</span>}
       </div>
       <div className="flex flex-wrap gap-2 mb-2">
         {rumor.entities?.companies?.map((c) => (
-          <span key={c} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 text-xs rounded-full">{c}</span>
+          <span key={c} className="px-2 py-0.5 bg-accent-lime/10 text-accent-lime border border-accent-lime/20 text-[10px] font-black uppercase rounded">
+            {c}
+          </span>
         ))}
         {rumor.entities?.products?.map((p) => (
-          <span key={p} className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200 text-xs rounded-full">{p}</span>
+          <span key={p} className="px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20 text-[10px] font-black uppercase rounded">
+            {p}
+          </span>
         ))}
         {rumor.entities?.features?.map((f) => (
-          <span key={f} className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 text-xs rounded-full">{f}</span>
+          <span key={f} className="px-2 py-0.5 bg-orange-500/10 text-orange-500 border border-orange-500/20 text-[10px] font-black uppercase rounded">
+            {f}
+          </span>
         ))}
       </div>
       {expanded && rumor.summary && (
-        <p className="text-slate-600 dark:text-slate-300 text-sm mb-3">{rumor.summary}</p>
+        <p className="text-slate-400 text-sm mb-3">{rumor.summary}</p>
       )}
       {expanded && rumor.timeline && rumor.timeline.length > 0 && (
         <MiniTimeline events={rumor.timeline} />
       )}
-      <div className="flex gap-4 mt-3 text-sm">
-        <Link href={`/rumors/${id}`} className="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400">
+      <div className="flex gap-4 mt-3">
+        <Link
+          href={`/rumors/${id}`}
+          className="text-[10px] font-black text-accent-lime uppercase tracking-widest hover:glow-text transition-all"
+        >
           View Full Timeline →
         </Link>
       </div>

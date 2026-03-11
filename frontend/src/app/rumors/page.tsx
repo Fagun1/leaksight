@@ -9,11 +9,15 @@ export default function RumorsPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Rumors</h1>
-        <div className="animate-pulse space-y-3">
+      <div className="max-w-[1600px] mx-auto space-y-6">
+        <div className="flex items-center gap-2 text-xs font-black text-accent-lime uppercase tracking-[0.3em] mb-1">
+          <span className="material-symbols-outlined text-sm">forum</span>
+          Intel Feed
+        </div>
+        <h2 className="text-4xl font-black text-white tracking-tighter">RUMOR_FEED</h2>
+        <div className="glass-card rounded-xl p-6 space-y-3">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="h-24 bg-slate-200 dark:bg-slate-800 rounded" />
+            <div key={i} className="h-24 bg-white/5 rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -22,9 +26,15 @@ export default function RumorsPage() {
 
   if (error) {
     return (
-      <div>
-        <h1 className="text-2xl font-bold">Rumors</h1>
-        <p className="mt-4 text-amber-600">Failed to load rumors. Check API connection.</p>
+      <div className="max-w-[1600px] mx-auto space-y-6">
+        <div className="flex items-center gap-2 text-xs font-black text-accent-lime uppercase tracking-[0.3em] mb-1">
+          <span className="material-symbols-outlined text-sm">forum</span>
+          Intel Feed
+        </div>
+        <h2 className="text-4xl font-black text-white tracking-tighter">RUMOR_FEED</h2>
+        <div className="glass-card rounded-xl p-8 text-center">
+          <p className="text-amber-500">Failed to load rumors. Check API connection.</p>
+        </div>
       </div>
     );
   }
@@ -32,21 +42,27 @@ export default function RumorsPage() {
   const rumors = (data?.data ?? []) as Rumor[];
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-[1600px] mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Rumors</h1>
-        <p className="text-slate-500 mt-1">All detected tech leaks and rumors</p>
+        <div className="flex items-center gap-2 text-xs font-black text-accent-lime uppercase tracking-[0.3em] mb-1">
+          <span className="material-symbols-outlined text-sm">forum</span>
+          Intel Feed
+        </div>
+        <h2 className="text-4xl font-black text-white tracking-tighter">RUMOR_FEED</h2>
+        <p className="text-slate-500 text-sm mt-1">All detected tech leaks and rumors</p>
       </div>
 
       {rumors.length === 0 ? (
-        <div className="p-8 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-center text-slate-500">
+        <div className="p-8 glass-card rounded-xl text-center text-slate-500">
           No rumors yet. Run a scrape or wait for data collection.
         </div>
       ) : (
-        <div className="space-y-4">
-          {rumors.map((rumor) => (
-            <LeakCard key={rumor._id} rumor={rumor} expanded={false} />
-          ))}
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="divide-y divide-white/5">
+            {rumors.map((rumor) => (
+              <LeakCard key={rumor._id} rumor={rumor} expanded={false} />
+            ))}
+          </div>
         </div>
       )}
     </div>

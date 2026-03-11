@@ -1,58 +1,70 @@
 "use client";
 
-import { useState } from "react";
-import Sidebar from "./Sidebar";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useScrape } from "@/hooks/useScrape";
 
 export default function Header() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const { runScrape, loading } = useScrape();
 
   return (
-    <>
-      <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-6 flex items-center justify-between">
+    <nav className="bg-black/40 backdrop-blur-2xl border-b border-white/10 px-4 h-12 flex items-center justify-between shrink-0">
+      <div className="flex items-center gap-6">
         <div className="flex items-center gap-3">
-          {/* Mobile & tablet menu button */}
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-slate-500 hover:text-slate-200 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 lg:hidden"
-            aria-label="Open navigation"
-            onClick={() => setMobileOpen(true)}
-          >
-            <span className="sr-only">Open navigation</span>
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-          <h2 className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            AI-Powered Tech Leak Intelligence
-          </h2>
-        </div>
-        <div className="hidden sm:flex items-center gap-4">
-          <span className="text-xs text-slate-500">Real-time monitoring</span>
-        </div>
-      </header>
-
-      {/* Mobile sidebar overlay */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 flex md:hidden">
-          <div
-            className="fixed inset-0 bg-black/40"
-            onClick={() => setMobileOpen(false)}
-          />
-          <div className="relative z-50 w-64 max-w-full h-full bg-slate-900">
-            <Sidebar />
+          <div className="size-7 rounded-sm bg-accent-lime flex items-center justify-center text-obsidian shadow-[0_0_15px_rgba(204,255,0,0.3)]">
+            <span className="material-symbols-outlined font-black text-lg">radar</span>
           </div>
+          <h1 className="text-white text-sm font-black tracking-[0.2em] uppercase glow-text">LeakSight</h1>
         </div>
-      )}
-    </>
+        <div className="h-4 w-[1px] bg-white/10 hidden md:block"></div>
+        <div className="flex items-center gap-1 group/nav">
+          <Link
+            className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-bold transition-all ${pathname === "/dashboard" || pathname === "/" ? "text-accent-lime bg-accent-lime/10 border border-accent-lime/20" : "text-slate-500 hover:text-white font-medium"}`}
+            href="/dashboard"
+          >
+            <span className="material-symbols-outlined text-[18px]">dashboard</span>
+            <span>DASHBOARD</span>
+          </Link>
+          <Link
+            className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-bold transition-all ${pathname === "/rumors" ? "text-accent-lime bg-accent-lime/10 border border-accent-lime/20" : "text-slate-500 hover:text-white font-medium"}`}
+            href="/rumors"
+          >
+            <span className="material-symbols-outlined text-[18px]">forum</span>
+            <span className="hidden lg:inline">RUMORS</span>
+          </Link>
+          <Link
+            className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-bold transition-all ${pathname === "/sources" ? "text-accent-lime bg-accent-lime/10 border border-accent-lime/20" : "text-slate-500 hover:text-white font-medium"}`}
+            href="/sources"
+          >
+            <span className="material-symbols-outlined text-[18px]">database</span>
+            <span className="hidden lg:inline">SOURCES</span>
+          </Link>
+          <Link
+            className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-bold transition-all ${pathname === "/entities" ? "text-accent-lime bg-accent-lime/10 border border-accent-lime/20" : "text-slate-500 hover:text-white font-medium"}`}
+            href="/entities"
+          >
+            <span className="material-symbols-outlined text-[18px]">fingerprint</span>
+            <span className="hidden lg:inline">ENTITIES</span>
+          </Link>
+          <button className="flex items-center gap-2 px-3 py-1 rounded text-slate-500 hover:text-white text-xs font-medium transition-all">
+            <span className="material-symbols-outlined text-[18px]">search</span>
+          </button>
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-accent-lime/70 tracking-tighter">
+          <span className="size-1.5 rounded-full bg-accent-lime animate-pulse"></span>
+          LIVE_OPS
+        </div>
+        <button
+          onClick={() => runScrape()}
+          disabled={loading}
+          className="bg-accent-lime/10 border border-accent-lime/30 text-accent-lime px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest hover:bg-accent-lime hover:text-obsidian transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-accent-lime/10 disabled:hover:text-accent-lime"
+        >
+          {loading ? "SCRAPING..." : "SCRAPE_CORE"}
+        </button>
+      </div>
+    </nav>
   );
 }

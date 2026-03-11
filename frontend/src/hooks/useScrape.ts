@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
-export default function ScrapeButton() {
+export function useScrape() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +33,7 @@ export default function ScrapeButton() {
           queryClient.invalidateQueries({ queryKey: ["stats"] });
           queryClient.invalidateQueries({ queryKey: ["velocity"] });
           queryClient.invalidateQueries({ queryKey: ["companyDist"] });
+          queryClient.invalidateQueries({ queryKey: ["analytics"] });
           return;
         }
       } catch {
@@ -43,7 +44,7 @@ export default function ScrapeButton() {
     setLoading(false);
   }, [queryClient]);
 
-  const handleScrape = async () => {
+  const runScrape = useCallback(async () => {
     setLoading(true);
     setResult(null);
     setError(null);
@@ -75,23 +76,7 @@ export default function ScrapeButton() {
       }
       setLoading(false);
     }
-  };
+  }, [pollForResult]);
 
-  return (
-    <div className="space-y-2">
-      <button
-        onClick={handleScrape}
-        disabled={loading}
-        className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-400 text-white rounded-lg font-medium transition-colors"
-      >
-        {loading ? "Scraping..." : "Scrape Now"}
-      </button>
-      {result && !error && (
-        <p className="text-sm text-emerald-600 dark:text-emerald-400">{result}</p>
-      )}
-      {error && (
-        <p className="text-sm text-amber-600 dark:text-amber-400 max-w-md">{error}</p>
-      )}
-    </div>
-  );
+  return { runScrape, loading, result, error };
 }
